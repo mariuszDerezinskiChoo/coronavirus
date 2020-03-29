@@ -3,8 +3,7 @@
     "public": "covid",
     "ignore": [
       "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
+      "**/.*"
     ]
   }
 }
