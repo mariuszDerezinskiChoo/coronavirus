@@ -4,15 +4,17 @@ class StatModel {
         this.states = {}
     }
 
-    addStateData(state, f, c, d){
-        this.states[state] = {
-            fips: f,
-            cases: c,
-            deaths: d
+    addCountyData(county, state, c){
+        if(this.states[state]==undefined){
+            this.states[state] = {}
+        }
+        this.states[state][county] = {
+            cases: c
         }
     }
 
-    getCases(state){
-        return this.states[state].cases;
+    getCases(county, state){
+        console.log("getting for " + county + state)
+        return this.states[state][county].cases;
     }
 }
