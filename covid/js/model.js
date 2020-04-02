@@ -20,7 +20,7 @@ class StatModel {
     }
 
     getCountyData(county, state){
-        console.log(county)
+        //console.log(county)
         return this.states[state][county]["03-30-2020"];
     }
 }

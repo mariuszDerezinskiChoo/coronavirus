@@ -24,6 +24,7 @@ $(function() {
         for(var i = 0; i < stateList.length; i++) {
             let tempState = $(stateList[i]);
             let tempID = tempState.attr("id")
+            //tempState.on('click' handleMouseOverState)
             tempState.attr('onclick',"handleMouseOverState(\""+tempID + "\")")
         }
 
@@ -32,7 +33,45 @@ $(function() {
     }, 100)
 
     loadCovidData();
+    attachHandlers();
 });
+
+function attachHandlers() {
+    $(".us-states").on("mouseover", handleStateHover);
+    $(".us-statse").on("mouseout", handleStateLeave);
+    $(".us-states").mousemove(function(e) {
+        $('#popup').css('top', e.pageY-20).css('left', e.pageX+10);
+        
+    });
+
+    $(".us-state-counties").mousemove(function(e) {
+        $('#popup').css('top', e.pageY-20).css('left', e.pageX+10);
+        
+    });
+
+    $('.us-state-counties').on("mouseover", handleCountyHover)
+    console.log($(".counties"))
+}
+
+function handleStateLeave(event) {
+    $('#popup').hide();
+}
+
+function handleCountyHover(event) {
+    $('#popup').show();
+    
+    county = event.target.id.split('__')[0];
+    state = abbrevToStates[event.target.id.split('__')[1]];
+    
+    cases = model.getCountyData(county, state,"03-30-2020");
+    $('#popup-state').html(county+' '+cases.cases);
+}
+
+function handleStateHover(event) {
+    $('#popup').show();
+    $('#popup-state').html(event.target.id);
+    console.log(event.target.id+'asdfasdf');
+}
 
 async function loadCovidData(){
     model = new StatModel();
@@ -75,7 +114,7 @@ async function loadCovidData(){
                     console.log(result)
                     let stateData = result.data.split("\n");
                     for(let j = 0; j < stateData.length; j++){
-                        let entry = stateData[j].split(",")
+                        let entry = stateData[j].split(",");
                         if(entry[3]=="US"){
                             model.addCountyData("03-30-2020",entry[1],entry[2],entry[7],entry[8],entry[9],entry[10]);
                         }
