@@ -37,40 +37,55 @@ $(function() {
 });
 
 function attachHandlers() {
-    $(".us-states").on("mouseover", handleStateHover);
-    $(".us-statse").on("mouseout", handleStateLeave);
-    $(".us-states").mousemove(function(e) {
+    $(".us-states").on("mouseover", 'path', handleStateHover);
+    $(".us-states").on("mouseleave", 'path', handleStateLeave);
+    $(".us-states").on('mousemove', 'path', function(e) {
         $('#popup').css('top', e.pageY-20).css('left', e.pageX+10);
         
     });
-
-    $(".us-state-counties").mousemove(function(e) {
+   
+    $(".us-state-counties").on('mousemove', 'path', function(e) {
         $('#popup').css('top', e.pageY-20).css('left', e.pageX+10);
-        
     });
 
-    $('.us-state-counties').on("mouseover", handleCountyHover)
+    $('.us-state-counties').on("mouseover", 'path', handleCountyHover)
+    $('.us-state-counties').on('mouseleave', 'path', handleCountyLeave);
     console.log($(".counties"))
 }
-
+function handleCountyLeave(event) {
+    $('#popup').hide();
+}
 function handleStateLeave(event) {
+   
     $('#popup').hide();
 }
 
 function handleCountyHover(event) {
-    $('#popup').show();
+
+    let f = function() {
+        $('#popup').fadeIn(200);
     
-    county = event.target.id.split('__')[0];
-    state = abbrevToStates[event.target.id.split('__')[1]];
+        county = event.target.id.split('__')[0];
+        state = abbrevToStates[event.target.id.split('__')[1]];
+        //print(county+state);
+        console.log(county+state);
+        cases = model.getCountyData(county, state,"03-30-2020");
+        $('#popup-state').html(county);
+        $('#popup-body').html(cases.cases)
+    }
+
+    debounce(f, 60);
     
-    cases = model.getCountyData(county, state,"03-30-2020");
-    $('#popup-state').html(county+' '+cases.cases);
 }
 
 function handleStateHover(event) {
-    $('#popup').show();
-    $('#popup-state').html(event.target.id);
-    console.log(event.target.id+'asdfasdf');
+    let f = function() {
+        $('#popup').fadeIn(200);
+        $('#popup-state').html(event.target.id);
+    }
+    debounce(f, 80);
+    
+    
 }
 
 async function loadCovidData(){
@@ -148,8 +163,16 @@ function setViewbox(svg) {
     }
 
 function handleMouseOverCounty(county,state){
-    $("#test-display").text(county + ", " + state + " " + model.getCountyData(county.replace("_"," "),state,"03-30-2020").cases)
+    // $("#test-display").text(county + ", " + state + " " + model.getCountyData(county.replace("_"," "),state,"03-30-2020").cases)
 }
 function handleMouseOverState(state){
     loadState(state)
+}
+
+let timeout;
+function debounce(fn, timeDelay) {
+    clearTimeout(timeout);
+    timeout = setTimeout( () => {
+        fn();
+    }, timeDelay);
 }
