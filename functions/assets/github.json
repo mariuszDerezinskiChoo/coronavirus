@@ -1,0 +1,6 @@
+{
+    "headers" : {
+        "Accept" : "application/vnd.github.VERSION.raw",
+        "Authorization" : "token d7c1aae17c43ec8aee32c25823330199b6322640"
+    }
+}
