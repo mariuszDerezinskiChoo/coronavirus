@@ -4,17 +4,23 @@ class StatModel {
         this.states = {}
     }
 
-    addCountyData(county, state, c){
+    addCountyData(day, county, state, c, d, r, a){
         if(this.states[state]==undefined){
             this.states[state] = {}
         }
-        this.states[state][county] = {
-            cases: c
+        if(this.states[state][county] == undefined){
+            this.states[state][county] = {}
+        }
+        this.states[state][county][day] = {
+            cases: c,
+            confirmed: d,
+            recovered: r,
+            active: a
         }
     }
 
-    getCases(county, state){
-        console.log("getting for " + county + state)
-        return this.states[state][county].cases;
+    getCountyData(county, state){
+        console.log(county)
+        return this.states[state][county]["03-30-2020"];
     }
 }
