@@ -36,29 +36,6 @@ $(function() {
 
 async function loadCovidData(){
     model = new StatModel();
-    /*
-    $.get("./data/dates.txt",(data) => {
-        return data
-    })
-    let dateFile = await $.get("./data/dates.txt",(data) => { return data })
-        let fileList = dateFile.split("\n")
-        let promises = []
-        for(let i = 0; i < 1; i++){
-            
-            console.log("fetching file " + fileList[i])
-            let date = fileList[i].split(".")[0] //not ideal, fix
-            promises.push( $.get("./data/"+fileList[i]).then((result) => {
-                let stateData = result.split("\n");
-                for(let j = 0; j < stateData.length; i++){
-                    let entry = stateData[j].split(",")
-                    if(entry[3]=="US"){
-                        model.addCountyData(date,entry[1],entry[2],entry[7],entry[8],entry[9],entry[10]);
-                    }
-                }
-            }));
-        }
-    return Promise.all(promises);
-    */
    let options = {
     headers: {
         Accept: "application/vnd.github.VERSION.raw"
