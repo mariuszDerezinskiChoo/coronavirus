@@ -60,3 +60,6 @@ build/Release
 
 # dotenv environment variables file
 .env
+
+# my Github API LMAO
+functions/assets/github.json
