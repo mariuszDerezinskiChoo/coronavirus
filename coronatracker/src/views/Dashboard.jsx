@@ -17,12 +17,14 @@
 */
 import React, { Component } from "react";
 import ChartistGraph from "react-chartist";
-import { Grid, Row, Col } from "react-bootstrap";
+import { Grid, Row, Col, Table} from "react-bootstrap";
 
 import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import { Tasks } from "components/Tasks/Tasks.jsx";
 import  USAMap  from "components/USAMap"
+import StateTable from "components/StateTable";
+
 import {
   dataPie,
   legendPie,
@@ -37,6 +39,32 @@ import {
 } from "variables/Variables.jsx";
 
 class Dashboard extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      stateData:[[]],
+      currentStateSelected:"Hover over a state"
+    }
+  }
+
+  
+
+  changeState = (usState) => {
+    
+    this.setState({currentStateSelected:usState});
+  }
+
+  componentDidMount() {
+    //retrieve database information 
+    //use Object.keys(stateData) to convert object to an array
+    this.setState({stateData:[
+      ['North Carolina', 0,0,0],
+      ['California', 0,0,0],
+      ['New York', 0,0,0],
+      ['Texas', 0,0,0]]});
+  }
+  
   createLegend(json) {
     var legend = [];
     for (var i = 0; i < json["names"].length; i++) {
@@ -92,14 +120,15 @@ class Dashboard extends Component {
           <Row>
             <Col md={8}>
               <Card
-                statsIcon="fa fa-history"
+                //statsIcon="fa fa-sourcetree"
                 id="chartHours"
-                title="Users Behavior"
-                category="24 Hours performance"
-                stats="Updated 3 minutes ago"
+                title="National Map"
+                category={this.state.currentStateSelected}
+                stats={'Source: https://coronavirus.jhu.edu/'}
                 content={
-                  <div className="ct-chart">
-                    { <USAMap></USAMap>
+                  <div className="">
+                    { <USAMap handleChangeState={this.changeState} 
+                    stateData={this.state.stateData}></USAMap>
                     /* <ChartistGraph
                       data={dataSales}
                       type="Line"
@@ -116,6 +145,38 @@ class Dashboard extends Component {
             </Col>
             <Col md={4}>
               <Card
+                title="US States"
+                category="Click on a state to get more info"
+                content = {
+                  <StateTable
+                    stateData={this.state.stateData}
+                  ></StateTable>
+                  // <Table>
+                  //   <thead>
+                  //     <tr>
+                  //       <th>State</th>
+                  //       <th>Cases</th>
+                  //     </tr>
+                  //   </thead>
+                  //   <tbody>
+                  //     <tr>
+                  //       {
+
+                  //       }
+                  //       <td>North Carolina</td>
+                  //       <td>???</td>
+                  //     </tr>
+                      
+                  //   </tbody>
+
+                  // </Table>
+                }
+              />
+                
+
+
+              
+              {/* <Card
                 statsIcon="fa fa-clock-o"
                 title="Email Statistics"
                 category="Last Campaign Performance"
@@ -131,7 +192,7 @@ class Dashboard extends Component {
                 legend={
                   <div className="legend">{this.createLegend(legendPie)}</div>
                 }
-              />
+              /> */}
             </Col>
           </Row>
 

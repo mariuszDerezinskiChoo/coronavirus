@@ -28,26 +28,27 @@ const dashboardRoutes = [
   {
     path: "/usamap",
     name: "National Map",
-    icon: "pe-7s-graph",
+    icon: "pe-7s-map",
+    // icon: "fa fa-flag-usa",
     component: Dashboard,
     layout: "/admin"
   },
   {
     path: "/statemaps",
     name: "State Maps",
-    icon: "pe-7s-user",
+    icon: "pe-7s-map-2",
     component: UserProfile,
     layout: "/admin"
   },
   {
     path: "/analytics",
     name: "Analytics",
-    icon: "pe-7s-note2",
+    icon: "pe-7s-graph1",
     component: TableList,
     layout: "/admin"
   },
   {
-    path: "/typography",
+    path: "/info",
     name: "Coronavirus Info",
     icon: "pe-7s-news-paper",
     component: Typography,
@@ -56,14 +57,14 @@ const dashboardRoutes = [
   {
     path: "/donate",
     name: "Donate",
-    icon: "pe-7s-science",
+    icon: "pe-7s-piggy",
     component: Icons,
     layout: "/admin"
   },
   {
     path: "/aboutus",
     name: "About Us",
-    icon: "pe-7s-map-marker",
+    icon: "pe-7s-id",
     component: Maps,
     layout: "/admin"
   },

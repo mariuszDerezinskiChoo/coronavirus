@@ -75,29 +75,25 @@ class Admin extends Component {
   };
   getRoutes = routes => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            render={props => (
-              <prop.component
-                {...props}
-                handleClick={this.handleNotificationClick}
-              />
-            )}
-            key={key}
-          />
-        );
-      } else {
-        return null;
-      }
+      return (
+        <Route
+          path={prop.path}
+          render={props => (
+            <prop.component
+              {...props}
+              handleClick={this.handleNotificationClick}
+            />
+          )}
+          key={key}
+        />
+      );
     });
   };
   getBrandText = path => {
     for (let i = 0; i < routes.length; i++) {
       if (
         this.props.location.pathname.indexOf(
-          routes[i].layout + routes[i].path
+           routes[i].path
         ) !== -1
       ) {
         return routes[i].name;
