@@ -15,11 +15,12 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import {
   Grid,
   Row,
   Col,
+  Nav,
   FormGroup,
   ControlLabel,
   FormControl
@@ -30,31 +31,107 @@ import USAMap from "components/USAMap";
 import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
-
 import avatar from "assets/img/faces/face-3.jpg";
+import {useCountyData} from '../hooks';
+import {CountyTable} from '../components/CountyTable';
+import {CountyChart} from '../components/CountyChart';
+const UserProfile = (props) => {
+  const [currentState, setCurrentState] = useState('North Carolina');
+  const [countySelected, setCountySelected] = useState('Guilford');
+  const {countyData} = useCountyData('test', currentState);
+  //const {countyData, currentState, setCurrentState} = useCountyData('test');
+  const handleCountyClick = (county) => {
+    setCountySelected(county);
+  }
+  const handleSelectState = (usState) => {
+    
+    setCurrentState(usState);
+    // console.log(countyData);
+  
+      
+        
+  }
+  return (
+    <div className="content">
+            <Grid fluid>
+              <Row>
+                <h2>State and County</h2>
+              </Row>
+              <Row>
+                
+                <Col sm={7}>
+                    <Card 
+                      title="Select a State"
+                      stats = "Source: Johns Hopkins"
+                      category = {currentState}
+                      content={
+                          <USAMap handleSelectState={handleSelectState}  ></USAMap>
+                      
+                      }
+                    />
+                </Col>
 
-class UserProfile extends Component {
+                <Col sm={5}>
+                  <Card 
+                  title={currentState}
+                  category = 'Click on a county get more info'
+                  stats = 'Source: Johns Hopkins'
+                  content={<CountyTable handleClick = {handleCountyClick} countyData={countyData}/>} />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Card
+                    title="County Growth Rate"
+                    content={<CountyChart 
+                      state = {currentState}
+                      county = {countySelected}
+                      countyData={countyData}/>}
+                  />
+                </Col>
+              </Row>
+            </Grid>
+          </div>
+  );
+}
+
+class UserProfile2 extends Component {
   render() {
     return (
       <div className="content">
         <Grid fluid>
           <Row>
+            <h2>State and County</h2>
+          </Row>
+          <Row>
             
-            <Col >
+            <Col sm={7}>
                 <Card 
-                  title="County Information"
+                  title="Select a State"
+                  content={
+                      <USAMap></USAMap>
+                   
+                    
+                  }
                 />
             </Col>
 
-            <Col >
+            <Col sm={5}>
               <Card 
-                title="Select a State"
-                content = {
-                  <USAMap/>
-                }
+                title="County Information"
+                // content = {
+                //   <USAMap/>
+                // }
               />
                 
               
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Card
+                title="County Growth Rate"
+              />
             </Col>
           </Row>
         </Grid>
