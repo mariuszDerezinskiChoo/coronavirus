@@ -35,6 +35,7 @@ import avatar from "assets/img/faces/face-3.jpg";
 import {useCountyData} from '../hooks';
 import {CountyTable} from '../components/CountyTable';
 import {CountyChart} from '../components/CountyChart';
+import {SearchBar} from '../components/SearchBar';
 const UserProfile = (props) => {
   const [currentState, setCurrentState] = useState('North Carolina');
   const [countySelected, setCountySelected] = useState('Guilford');
@@ -57,6 +58,9 @@ const UserProfile = (props) => {
               <Row>
                 <h2>State and County</h2>
               </Row>
+              {/* <Row fluid>
+                  <SearchBar/>
+              </Row> */}
               <Row>
                 
                 <Col sm={7}>
@@ -80,15 +84,35 @@ const UserProfile = (props) => {
                 </Col>
               </Row>
               <Row>
-                <Col>
+                <Col md={6}>
                   <Card
                     title="County Growth Rate"
                     content={<CountyChart 
+
                       state = {currentState}
                       county = {countySelected}
                       countyData={countyData}/>}
                   />
                 </Col>
+
+                <Col md={6}>
+                  <Card
+                    title={ 'County Total Deaths'}
+                    // category="Backend development"
+                    // stats="Updated 3 minutes ago"
+                    // statsIcon="fa fa-history"
+                    content={
+                      
+                        <CountyChart 
+                        data='death'
+                      state = {currentState}
+                      county = {countySelected}
+                      countyData={countyData}/>
+                  
+                      
+                    }
+                  />
+               </Col>
               </Row>
             </Grid>
           </div>

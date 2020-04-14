@@ -9,9 +9,13 @@ export const CountyTable = (props) => {
             props.handleClick(county);
         }
     }
-
+    if (props.countyData.length === 0) {
+        return <h1>Loading...</h1>
+    }
+    const style = {maxHeight: '365px', overflow: 'auto'}
     return (
-        
+       
+        <div style={style}>
         <Table striped hover style={tableStyle}>
                 <thead>
                     <tr>
@@ -34,5 +38,6 @@ export const CountyTable = (props) => {
                 </tbody>
                 
             </Table>
+            </div>
     );
 }

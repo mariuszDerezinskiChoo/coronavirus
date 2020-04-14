@@ -6,7 +6,7 @@ export const useStateData = date => {
 
     useEffect(() => {
         firebase.firestore().collection('Countries').doc('UnitedStates').collection('STATES')
-        .where('date', '==', '2020-04-01').onSnapshot((snapshot) => {
+        .where('date', '==', '2020-04-13').onSnapshot((snapshot) => {
             //.state, .newConfirmed .death .confirmmed
             const newStateData = snapshot.docs.map(state => ({
                 id:state.id, 
@@ -26,7 +26,7 @@ export const useCountyData = (date, state) => {
 
     useEffect(() => {
         firebase.firestore().collection('Countries').doc('UnitedStates').collection(state)
-        .where('date', '==', '2020-03-30').onSnapshot((snapshot) => {
+        .where('date', '==', '2020-04-13').onSnapshot((snapshot) => {
             const newCountyData = snapshot.docs.map(county => (
                 {
                     id:county.id,
@@ -56,7 +56,26 @@ export const useCountyTimeSeries = (state, county) => {
                 console.log(newData)
                 setCountyTimeSeries(newData);
             })
-    }, [county]);
+    }, [state, county]);
 
     return {countyTimeSeries}
+}
+
+export const useStateTimeSeries = (state) => {
+    const [stateTimeSeries, setStateTimeSeries] = useState([]);
+
+    useEffect(() => {
+        firebase.firestore().collection('Countries').doc('UnitedStates')
+            .collection('STATES').where('state', '==', state).onSnapshot((snapshot) => {
+                const newData = snapshot.docs.map(state => ({
+                    id:state.id,
+                    ...state.data()
+                }));
+                console.log(newData);
+                setStateTimeSeries(newData)
+            });
+    },[state]);
+    return {stateTimeSeries}
+    
+
 }
