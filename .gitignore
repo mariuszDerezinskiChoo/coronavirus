@@ -63,3 +63,4 @@ build/Release
 
 # my Github API LMAO
 functions/assets/github.json
+functions/assets/firestore_admin.json

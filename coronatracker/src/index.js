@@ -17,6 +17,7 @@
 */
 import React from "react";
 import ReactDOM from "react-dom";
+import firebase from "./firebase";
 
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 

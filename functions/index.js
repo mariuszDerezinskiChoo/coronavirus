@@ -11,22 +11,9 @@ admin.initializeApp({
 const axios = require('axios')
 const options = require('./assets/github.json')
 const db = admin.firestore();
-let day = 79;
+let dailyUpdateDay = new Date(2020,2,22);
 const DAY_ZERO = new Date(2020,0,22)
 const states = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Puerto Rico','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming']
-
-
-exports.backfill = functions.pubsub.schedule('every 5000 minutes').onRun((context) => {
-    let confirmedURL = "https://api.github.com/repos/CSSEGISandData/COVID-19/contents/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"
-    let deathURL = "https://api.github.com/repos/CSSEGISandData/COVID-19/contents/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"
-    return Promise.all([updateFromCSV(confirmedURL,day,"confirmed","newConfirmed"),updateFromCSV(deathURL,day+1,"death","newDeath")]).then((status)=> {
-        day--;
-        console.log("success: " + status)
-    })
-})
-
-
-
 
 exports.checkForCommits = functions.pubsub.schedule('every 1 minutes').onRun((context) => {
     return axios.get("https://api.github.com/repos/CSSEGISandData/COVID-19/contents/csse_covid_19_data/csse_covid_19_daily_reports",options)
@@ -63,7 +50,25 @@ exports.checkForCommits = functions.pubsub.schedule('every 1 minutes').onRun((co
         })
 })
 
-exports.fetchNewDay = functions.firestore.document('validation/UnitedStates/commits/{day}').onUpdate((change, context) => {
+exports.fixStateSumError = functions.pubsub.schedule('every 1 minutes').onRun((context) => {
+    let datesToRemove = ['2020-04-14','2020-04-15','2020-04-16','2020-04-17']
+    let promises = []
+    for(let i = 0; i < datesToRemove.length; i++){
+        promises.push(db.collection("Countries").doc("UnitedStates").collection("STATES").where('date','==',datesToRemove[i]).get()
+            .then((results) => {
+                let deletePromises = []
+                results.forEach((doc)=>{
+                    deletePromises.push(doc.ref.delete())
+                })
+                return deletePromises;
+            }))
+    }
+    return Promise.all(promises)
+})
+
+
+
+exports.fetchNewDay = functions.firestore.document('validation/UnitedStates/commits/{day}').onWrite((change, context) => {
     let changeAfter = change.after.data();
     if(changeAfter.updated == false){
         let dateRaw = changeAfter.date.split("-");
@@ -75,9 +80,6 @@ exports.fetchNewDay = functions.firestore.document('validation/UnitedStates/comm
             let date = change.after.data().date;
             let yesterday = incrementDay(date,-1);
             let tomorrow = incrementDay(date, 1);
-            console.log(date + " " + yesterday)
-            let countyList = []
-            let stateList = []
             let promises = []
             for(let i = 0; i < states.length; i++){
                 promises.push(db.collection("Countries").doc("UnitedStates").collection(states[i])
@@ -87,25 +89,48 @@ exports.fetchNewDay = functions.firestore.document('validation/UnitedStates/comm
                     snapshot.forEach((doc) =>{
                         let yesterdayData = doc.data();
                         let county = yesterdayData.county;
-                        let yesterdayConfirmed = yesterdayData.confirmed;
-                        let yesterdayDeath = yesterdayData.death;
+                        let yesterdayRef = db.collection("Countries").doc("UnitedStates").collection(states[i]).doc(yesterday + "_" + county);
                         let todayRef = db.collection("Countries").doc("UnitedStates").collection(states[i]).doc(date + "_" + county);
                         let tomorrowRef = db.collection("Countries").doc("UnitedStates").collection(states[i]).doc(tomorrow + "_" + county);
                         snapshotPromises.push(db.runTransaction(t => {
-                            let tomorrowResults;
-                            return t.getAll(todayRef, tomorrowRef).then(results => {
-                                tomorrowResults = results[1];
-                                let todayData = results[1].data();
-                                let todayConfirmed, todayDeath;
+                            let tomorrowResults, todayConfirmed, todayDeath;
+                            //yesterday ALWAYS exists (guarenteed by query above) today need not exist
+                            return t.getAll(yesterdayRef, todayRef, tomorrowRef).then(results => {
+                                let yesterdayData = results[0].data();
+                                let yesterdayConfirmed;
+                                try{
+                                    yesterdayConfirmed = yesterdayData.confirmed;
+                                }catch(err){
+                                    console.log("error with: "+county)
+                                }
+                                let yesterdayDeath = yesterdayData.death;
+                                if(yesterdayDeath == undefined){
+                                    console.log(yesterdayData);
+                                }
+                                
+                                tomorrowResults = results[2];
+                                let todayResults = results[1];
                                 try{
                                     todayConfirmed = map[states[i]][county].confirmed;
                                     todayDeath = map[states[i]][county].death;
+                                    if(todayDeath == undefined){
+                                        console.log("%s %j", county, map[states[i]][county])
+                                    }
                                 } catch(err){
-                                    todayConfirmed = todayData.confirmed;
-                                    todayDeath - todayData.death;
+                                    if(todayResults.exists){
+                                        let todayData = todayResults.data();
+                                        todayConfirmed = todayData.confirmed;
+                                        todayDeath = todayData.death;
+                                        if(todayDeath == undefined){
+                                            console.log("today: %j", todayData)
+                                        }
+                                    } else{
+                                        todayConfirmed = yesterdayConfirmed;
+                                        todayDeath = yesterdayDeath;
+                                    }
                                 }
                                     let todayNewConfirmed = todayConfirmed - yesterdayConfirmed;
-                                    let todayNewDeath = todayDeath = yesterdayDeath;
+                                    let todayNewDeath = todayDeath - yesterdayDeath;
                                     let todayUpdate = {
                                         "confirmed" : todayConfirmed,
                                         "death" : todayDeath,
@@ -134,9 +159,9 @@ exports.fetchNewDay = functions.firestore.document('validation/UnitedStates/comm
                                             "date" : yesterday,
                                             "inferred" : false
                                         }
-                                        t.set(tomorrowRed,tomorrowUpdate)
+                                        t.set(tomorrowRef,tomorrowUpdate)
                                     } catch(err){
-                                        console.log("there was an error!");
+                                        console.log("there was an error!" + err);
                                     }
                                 }
                                 
@@ -183,7 +208,7 @@ function sumDay(date){
                     "newConfirmed" : stateNewConfirmed,
                     "newDeath" : stateNewDeath
                 }
-                return db.collection("Countries").doc("UnitedStates").collection("STATES").doc(states[i] + "_" + date)
+                return db.collection("Countries").doc("UnitedStates").collection("STATES").doc(date + "_" + states[i])
                     .set(stateData)
             }))
     }
@@ -200,6 +225,9 @@ function mapFromCSV(text){
         let county = row[1]
         let confirmed = row[7]
         let dead = row[8]
+        if(county == "New York"){
+            console.log(row)
+        }
         if (map[state] == undefined){
             map[state] = {}
         }
@@ -255,9 +283,7 @@ function updateFromCSV(url, dayIndex, currentKey, newKey){
 
 function incrementDay(date,increment){
     let oldRaw = date.split("-")
-    console.log(oldRaw)
     let oldDate = new Date(oldRaw[0],oldRaw[1]-1,oldRaw[2])
-    console.log(oldDate)
     let newDate = new Date(oldDate.getTime());
     newDate.setDate(oldDate.getDate() + increment)
     console.log(newDate)
