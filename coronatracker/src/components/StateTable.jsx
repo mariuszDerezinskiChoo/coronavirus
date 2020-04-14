@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import {Table} from "react-bootstrap";
-
+const style = {maxHeight: '420px', overflow: 'auto'}
 class StateTable extends Component {
+    
+
     render() {
         return (
+            <div style={style}>
             <Table>
                 <thead>
                     <tr>
@@ -29,6 +32,7 @@ class StateTable extends Component {
                 </tbody>
                 
             </Table>
+            </div>
 
         );
     }

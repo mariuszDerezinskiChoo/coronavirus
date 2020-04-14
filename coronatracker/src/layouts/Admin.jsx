@@ -16,7 +16,7 @@
 
 */
 import React, { Component } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect} from "react-router-dom";
 import NotificationSystem from "react-notification-system";
 
 //import AdminNavbar from "components/Navbars/AdminNavbar";
@@ -177,10 +177,15 @@ class Admin extends Component {
             {...this.props}
             brandText={this.getBrandText(this.props.location.pathname)}
           /> */}
-          <Switch>{this.getRoutes(routes)}</Switch>
+          <Switch>{this.getRoutes(routes)}
+          <Route exact path="/" render={() => (
+        <Redirect to="/usamap"/>
+      )}/>
+          </Switch>
           <Footer />
         
         </div>
+        
       </div>
     );
   }

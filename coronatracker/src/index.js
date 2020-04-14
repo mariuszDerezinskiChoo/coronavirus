@@ -31,10 +31,15 @@ import AdminLayout from "layouts/Admin.jsx";
 
 ReactDOM.render(
   <BrowserRouter>
+  
     <Switch>
+      
       <Route render={props => <AdminLayout {...props} />} />
-      <Redirect from="/" to="/usamap" />
+      
+      {/* <Redirect exact from='/' to='usamap'/> */}
+      {/* <Redirect from="/" to="/usamap" /> */}
     </Switch>
+    
   </BrowserRouter>,
   document.getElementById("root")
 );

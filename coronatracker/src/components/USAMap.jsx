@@ -9,7 +9,7 @@ class USAMap extends Component {
     
     componentDidMount() {
         //retrieve database information 
-
+      
     }
 
     handleMouseEnter = (e) => {

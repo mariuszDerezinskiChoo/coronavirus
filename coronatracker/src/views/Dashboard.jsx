@@ -24,9 +24,11 @@ import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import { Tasks } from "components/Tasks/Tasks.jsx";
 import  USAMap  from "components/USAMap"
 import StateTable from "components/StateTable";
-
+import {StateChart} from 'components/StateChart';
+import {TimeSeriesGraph} from 'components/TimeSeriesGraph';
 import firebase from "../firebase"
 import {useStateData} from '../hooks';
+import axios from 'axios';
 
 import {
   dataPie,
@@ -43,15 +45,28 @@ import {
 
 
 export const Dashboard = (props) => {
-  const [currentStateSelected, setCurrentStateSelected] = useState('Hover over');
-  //const [stateData, setStateData] = useState([]);
-
+  const [currentStateSelected, setCurrentStateSelected] = useState('New York');
+  const [nationalData, setNationalData] = useState({});
+  const [nationalTimeSeries, setNationalTimeSeries] = useState([]);
   const {stateData} = useStateData('test');
+  
   console.log(stateData);
   const changeState = (usState) => {
     setCurrentStateSelected(usState);
     
   }
+
+  useEffect(() => {
+    axios.get('https://covidtracking.com/api/v1/us/current.json').then(res => {
+      
+      setNationalData(res.data[0])
+    })
+
+    axios.get('https://covidtracking.com/api/us/daily').then(res => {
+      console.log(res.data);
+      setNationalTimeSeries(res.data.reverse());
+    })
+  },[])
   // useEffect(() => {
   //   setStateData([
   //     ['North Carolina', 0,0,0],
@@ -72,14 +87,14 @@ export const Dashboard = (props) => {
 
   return (
     <div className="content">
-        <h1>Test</h1>
+      
         <Grid fluid>
           <Row>
             <Col lg={3} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-server text-warning" />}
                 statsText="Total US Cases"
-                statsValue="200,000"
+                statsValue={nationalData.positive}
                 statsIcon={<i className="fa fa-refresh" />}
                 statsIconText="Updated now"
               />
@@ -87,33 +102,33 @@ export const Dashboard = (props) => {
             <Col lg={3} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-wallet text-success" />}
-                statsText="Daily Cases"
-                statsValue="20,000"
-                statsIcon={<i className="fa fa-calendar-o" />}
-                statsIconText="Last day"
+                statsText="Total US Deaths"
+                statsValue={nationalData.death}
+                statsIcon={<i className="fa fa-refresh" />}
+                statsIconText="Updated now"
               />
             </Col>
             <Col lg={3} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-graph1 text-danger" />}
-                statsText="Errors"
-                statsValue="23"
-                statsIcon={<i className="fa fa-clock-o" />}
-                statsIconText="In the last hour"
+                statsText="US Hospitalized"
+                statsValue={nationalData.hospitalizedCurrently}
+                statsIcon={<i className="fa fa-refresh" />}
+                statsIconText="Updated now"
               />
             </Col>
             <Col lg={3} sm={6}>
               <StatsCard
                 bigIcon={<i className="fa fa-twitter text-info" />}
-                statsText="Followers"
-                statsValue="+45"
+                statsText="US Recovered"
+                statsValue={nationalData.recovered}
                 statsIcon={<i className="fa fa-refresh" />}
                 statsIconText="Updated now"
               />
             </Col>
           </Row>
           <Row>
-            <Col md={8}>
+          <Col md={7}>
               <Card
                 //statsIcon="fa fa-sourcetree"
                 id="chartHours"
@@ -122,7 +137,7 @@ export const Dashboard = (props) => {
                 stats={'Source: https://coronavirus.jhu.edu/'}
                 content={
                   <div className="">
-                    { <USAMap handleChangeState={changeState} 
+                    { <USAMap handleSelectState={changeState} 
                     stateData={stateData}></USAMap>
                     /* <ChartistGraph
                       data={dataSales}
@@ -138,7 +153,7 @@ export const Dashboard = (props) => {
                 }
               />
             </Col>
-            <Col md={4}>
+            <Col md={5}>
               <Card
                 title="US States"
                 category="Click on a state to get more info"
@@ -189,43 +204,39 @@ export const Dashboard = (props) => {
                 }
               /> */}
             </Col>
-          </Row>
 
+            
+          </Row>
+          <Row className='justify-content-md-center'>
+            <TimeSeriesGraph data={nationalTimeSeries}/>
+          </Row>
+              
           <Row>
             <Col md={6}>
               <Card
                 id="chartActivity"
-                title="2014 Sales"
+                title={currentStateSelected + ' Total Confirmed Cases'}
                 category="All products including Taxes"
                 stats="Data information certified"
                 statsIcon="fa fa-check"
                 content={
                   <div className="ct-chart">
-                    <ChartistGraph
-                      data={dataBar}
-                      type="Bar"
-                      options={optionsBar}
-                      responsiveOptions={responsiveBar}
-                    />
+                    <StateChart state={currentStateSelected}/>
                   </div>
                 }
-                legend={
-                  <div className="legend">{createLegend(legendBar)}</div>
-                }
+                
               />
             </Col>
 
             <Col md={6}>
               <Card
-                title="Tasks"
+                title={currentStateSelected + ' Total Deaths'}
                 category="Backend development"
                 stats="Updated 3 minutes ago"
                 statsIcon="fa fa-history"
                 content={
                   <div className="table-full-width">
-                    <table className="table">
-                      <Tasks />
-                    </table>
+                    <StateChart data='death' state={currentStateSelected}/>
                   </div>
                 }
               />
