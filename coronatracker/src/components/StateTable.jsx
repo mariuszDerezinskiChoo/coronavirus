@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Table} from "react-bootstrap";
+import {Table, Spinner} from "react-bootstrap";
 const style = {maxHeight: '390px', overflow: 'auto'}
 class StateTable extends Component {
     
@@ -9,9 +9,14 @@ class StateTable extends Component {
         }
     }
     render() {
+        if (this.props.stateData.length === 0) {
+            return <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+             </Spinner>
+        }
         return (
             <div style={style}>
-            <Table>
+            <Table striped hover>
                 <thead>
                     <tr>
                         <th>States</th>

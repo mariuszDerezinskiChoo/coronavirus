@@ -1,4 +1,5 @@
 import React from 'react';
+import {DropdownButton} from 'react-bootstrap';
 
 export function StyledCard(props) {
     return (
@@ -7,6 +8,7 @@ export function StyledCard(props) {
                   <h5 class="m-0 font-weight-bold text-primary">{props.title}</h5>
                   
                   <h6 class="mt-1 card-subtitle mb-2 text-muted">{props.subtitle}</h6>
+                    
                 </div>
                 
                 <div class="card-body">
@@ -14,10 +16,11 @@ export function StyledCard(props) {
                   
                 </div>
 
-                {/* {props.footer ?}
+                
+                {props.footer !== undefined ?
                 <div class="card-footer">
-                    <h6>Test</h6>
-                </div> */}
+                    <h6>{props.footer}</h6>
+                </div> : null}
               </div>
               
     );

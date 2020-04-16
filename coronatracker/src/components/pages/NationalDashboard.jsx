@@ -59,7 +59,7 @@ export function NationalDashboard() {
 
       </Row>
       <Row>
-        <Col md={7}>
+        <Col md={6}>
           <StyledCard title="National Map" subtitle={currentStateSelected + ' (Click on a state to get more info)'}>
              <USAMap handleSelectState={changeState} />
           </StyledCard>
@@ -67,13 +67,13 @@ export function NationalDashboard() {
             
        
         </Col>
-        <Col md={5}>
+        <Col md={6}>
           {/* <Card>
             <Card.Body>
               <StateTable stateData={stateData} />
             </Card.Body>
           </Card> */}
-          <StyledCard title="US States" subtitle={'Data valid through: ' +date}>
+          <StyledCard title="US States" subtitle={'Data valid through: ' +date} footer="Source: Johns Hopkins">
           <StateTable handleClick={changeState} stateData={stateData} />
           </StyledCard>
         </Col>

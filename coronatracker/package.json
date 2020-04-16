@@ -17,6 +17,7 @@
     "react-bootstrap-date-picker": "^5.1.0",
     "react-chartist": "0.13.3",
     "react-chartjs-2": "^2.9.0",
+    "react-countup": "^4.3.3",
     "react-dom": "16.8.6",
     "react-google-maps": "9.4.5",
     "react-notification-system": "0.2.17",

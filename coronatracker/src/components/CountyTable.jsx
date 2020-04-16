@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table} from "react-bootstrap";
+import {Table, Spinner} from "react-bootstrap";
  const tableStyle ={overflow: 'auto', maxHeight:'200px'}
 
 export const CountyTable = (props) => {
@@ -10,7 +10,9 @@ export const CountyTable = (props) => {
         }
     }
     if (props.countyData.length === 0) {
-        return <h1>Loading...</h1>
+        return <Spinner animation="border" role="status">
+        <span className="sr-only">Loading...</span>
+         </Spinner>
     }
     const style = {maxHeight: '365px', overflow: 'auto'}
     return (

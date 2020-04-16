@@ -3,7 +3,7 @@ import {Line} from 'react-chartjs-2';
 import {useCountyTimeSeries} from '../hooks';
 export const CountyChart = (props) => {
     const {countyTimeSeries} = useCountyTimeSeries(props.state, props.county)
-    
+    console.log(countyTimeSeries);
     let data;
     if (props.data === 'death') {
       data = countyTimeSeries.map((c) => {return c.death})
