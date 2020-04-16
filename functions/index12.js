@@ -101,6 +101,22 @@ exports.fixMistakes = functions.pubsub.schedule('every 1 minutes').onRun((contex
     return Promise.all(promises);
 })
 
+exports.fixStateSumError = functions.pubsub.schedule('every 1 minutes').onRun((context) => {
+    let datesToRemove = ['2020-04-14','2020-04-15','2020-04-16','2020-04-17']
+    let promises = []
+    for(let i = 0; i < datesToRemove.length; i++){
+        promises.push(db.collection("Countries").doc("UnitedStates").collection("STATES").where('date','==',datesToRemove[i]).get()
+            .then((results) => {
+                let deletePromises = []
+                results.forEach((doc)=>{
+                    deletePromises.push(doc.ref.delete())
+                })
+                return deletePromises;
+            }))
+    }
+    return Promise.all(promises)
+})
+
 exports.fixMistakes = functions.pubsub.schedule('every 1 minutes').onRun((context) => {
     let states = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Puerto Rico','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming']
     let promises = []
