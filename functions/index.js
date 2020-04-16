@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin')
 // Fetch the service account key JSON file contents
-var serviceAccount = require("./firestore_admin.json");
+var serviceAccount = require("./assets/firestore_admin.json");
 
 // Initialize the app with a service account, granting admin privileges
 admin.initializeApp({
@@ -15,7 +15,7 @@ let dailyUpdateDay = new Date(2020,2,22);
 const DAY_ZERO = new Date(2020,0,22)
 const states = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Puerto Rico','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming']
 
-exports.checkForCommits = functions.pubsub.schedule('every 1 minutes').onRun((context) => {
+exports.checkForCommits = functions.pubsub.schedule('every 60 minutes').onRun((context) => {
     return axios.get("https://api.github.com/repos/CSSEGISandData/COVID-19/contents/csse_covid_19_data/csse_covid_19_daily_reports",options)
         .then((result) => {
             let fileList = result.data;
@@ -49,24 +49,6 @@ exports.checkForCommits = functions.pubsub.schedule('every 1 minutes').onRun((co
             console.log(failure)
         })
 })
-
-exports.fixStateSumError = functions.pubsub.schedule('every 1 minutes').onRun((context) => {
-    let datesToRemove = ['2020-04-14','2020-04-15','2020-04-16','2020-04-17']
-    let promises = []
-    for(let i = 0; i < datesToRemove.length; i++){
-        promises.push(db.collection("Countries").doc("UnitedStates").collection("STATES").where('date','==',datesToRemove[i]).get()
-            .then((results) => {
-                let deletePromises = []
-                results.forEach((doc)=>{
-                    deletePromises.push(doc.ref.delete())
-                })
-                return deletePromises;
-            }))
-    }
-    return Promise.all(promises)
-})
-
-
 
 exports.fetchNewDay = functions.firestore.document('validation/UnitedStates/commits/{day}').onWrite((change, context) => {
     let changeAfter = change.after.data();
