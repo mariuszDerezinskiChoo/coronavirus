@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import {Table} from "react-bootstrap";
-const style = {maxHeight: '420px', overflow: 'auto'}
+const style = {maxHeight: '390px', overflow: 'auto'}
 class StateTable extends Component {
     
-
+    handleClick =(usState) => {
+        if (this.props.handleClick) {
+            this.props.handleClick(usState);
+        }
+    }
     render() {
         return (
             <div style={style}>
@@ -20,7 +24,7 @@ class StateTable extends Component {
                 <tbody>
                     {this.props.stateData.map((usState, key) => {
                             return (
-                            <tr key={key}>
+                            <tr key={key} onClick={e => {this.handleClick(usState.state)}}>
                                 <td>{usState.state}</td>
                                 <td>{usState.confirmed}</td>
                                 <td>{usState.death}</td>

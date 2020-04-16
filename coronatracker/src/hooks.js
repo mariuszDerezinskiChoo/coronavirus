@@ -4,18 +4,21 @@ import firebase from "./firebase"
 export const useStateData = date => {
     const [stateData, setStateData] = useState([]);
 
-    useEffect(() => {
-        firebase.firestore().collection('Countries').doc('UnitedStates').collection('STATES')
-        .where('date', '==', '2020-04-13').onSnapshot((snapshot) => {
+    useEffect( () => {
+        // let day = (await firebase.firestore().collection('Countries').doc('UnitedStates').get()).data().lastUpdated;
+        let unsub = firebase.firestore().collection('Countries').doc('UnitedStates').collection('STATES')
+        .where('date', '==', date).onSnapshot((snapshot) => {
             //.state, .newConfirmed .death .confirmmed
             const newStateData = snapshot.docs.map(state => ({
                 id:state.id, 
                 ...state.data()
             }));
-            console.log('asdhjflasdkf');
+            
             setStateData(newStateData);
         })
-    },[]);
+
+        return () => unsub();
+    },[date]);
 
     return {stateData}
 }
@@ -24,9 +27,12 @@ export const useCountyData = (date, state) => {
     // const [currentState, setCurrentState] = useState('North Carolina');
     const [countyData, setCountyData] = useState([]);
 
-    useEffect(() => {
-        firebase.firestore().collection('Countries').doc('UnitedStates').collection(state)
-        .where('date', '==', '2020-04-13').onSnapshot((snapshot) => {
+    
+    useEffect( () => {
+        // let day = (await firebase.firestore().collection('Countries').doc('UnitedStates').get()).data().lastUpdated
+       
+        let unsub = firebase.firestore().collection('Countries').doc('UnitedStates').collection(state)
+        .where('date', '==', date).onSnapshot((snapshot) => {
             const newCountyData = snapshot.docs.map(county => (
                 {
                     id:county.id,
@@ -35,7 +41,9 @@ export const useCountyData = (date, state) => {
             ));
             setCountyData(newCountyData);
         });
-    },[state]);
+
+        return () => unsub();
+    },[date, state]);
 
     return {countyData}
 }
@@ -46,16 +54,17 @@ export const useCountyTimeSeries = (state, county) => {
     const [countyTimeSeries, setCountyTimeSeries] = useState([]);
 
     useEffect(() => {
-        console.log(county);
-        firebase.firestore().collection('Countries').doc('UnitedStates')
+       
+        let unsub = firebase.firestore().collection('Countries').doc('UnitedStates')
             .collection(state).where('county', '==', county).onSnapshot((snapshot) => {
                 const newData = snapshot.docs.map(county => ({
                     id:county.id,
                     ...county.data()
                 }));
-                console.log(newData)
                 setCountyTimeSeries(newData);
-            })
+            });
+
+            return () => unsub();
     }, [state, county]);
 
     return {countyTimeSeries}
@@ -65,15 +74,17 @@ export const useStateTimeSeries = (state) => {
     const [stateTimeSeries, setStateTimeSeries] = useState([]);
 
     useEffect(() => {
-        firebase.firestore().collection('Countries').doc('UnitedStates')
+        let unsub = firebase.firestore().collection('Countries').doc('UnitedStates')
             .collection('STATES').where('state', '==', state).onSnapshot((snapshot) => {
                 const newData = snapshot.docs.map(state => ({
                     id:state.id,
                     ...state.data()
                 }));
-                console.log(newData);
+                
                 setStateTimeSeries(newData)
             });
+
+            return () => {console.log('unsubscribing'); unsub()};
     },[state]);
     return {stateTimeSeries}
     

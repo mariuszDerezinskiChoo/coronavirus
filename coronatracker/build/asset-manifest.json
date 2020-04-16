@@ -1,22 +1,11 @@
 {
   "files": {
-    "main.css": "/static/css/main.badacc0d.chunk.css",
-    "main.js": "/static/js/main.ab6267cd.chunk.js",
-    "main.js.map": "/static/js/main.ab6267cd.chunk.js.map",
+    "main.css": "/static/css/main.390ee8d0.chunk.css",
+    "main.js": "/static/js/main.37340654.chunk.js",
     "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
-    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
-    "static/css/2.0ce8856a.chunk.css": "/static/css/2.0ce8856a.chunk.css",
-    "static/js/2.9024a52c.chunk.js": "/static/js/2.9024a52c.chunk.js",
-    "static/js/2.9024a52c.chunk.js.map": "/static/js/2.9024a52c.chunk.js.map",
+    "static/js/2.85c28322.chunk.js": "/static/js/2.85c28322.chunk.js",
     "index.html": "/index.html",
-    "precache-manifest.a2035859051742ab6e73a134084614d4.js": "/precache-manifest.a2035859051742ab6e73a134084614d4.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/2.0ce8856a.chunk.css.map": "/static/css/2.0ce8856a.chunk.css.map",
-    "static/css/main.badacc0d.chunk.css.map": "/static/css/main.badacc0d.chunk.css.map",
-    "static/media/pe-icon-7-stroke.css": "/static/media/Pe-icon-7-stroke.c45f7de0.svg",
-    "static/media/face-3.jpg": "/static/media/face-3.ce7a6b79.jpg",
-    "static/media/bootstrap.min.css": "/static/media/glyphicons-halflings-regular.fa277232.woff",
-    "static/media/reactlogo.png": "/static/media/reactlogo.9b864b36.png",
-    "static/media/sidebar-3.jpg": "/static/media/sidebar-3.34535b95.jpg"
+    "precache-manifest.564e09704ad1d13c2341f0e7cfe049bd.js": "/precache-manifest.564e09704ad1d13c2341f0e7cfe049bd.js",
+    "service-worker.js": "/service-worker.js"
   }
 }
