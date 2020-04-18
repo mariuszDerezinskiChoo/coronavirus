@@ -5,6 +5,7 @@ import {StateDashboard} from './components/pages/StateDashboard';
 import {InfoPage} from './components/pages/InfoPage';
 import {DonatePage} from './components/pages/DonatePage';
 import {Sidebar} from './components/Sidebar';
+import {NavBar} from './components/NavBar';
 import './assets/css/sb-admin-2.min.css';
 import './assets/css/index.css';
 import './assets/scss/sb-admin-2.scss';
@@ -16,6 +17,8 @@ function App() {
         <div id="wrapper">
             <Router>
                 <Sidebar></Sidebar>
+                <div id='content-wrapper'>
+                {/* <NavBar></NavBar> */}
                 <Switch>
                     <Route exact path='/usamap' component={NationalDashboard}></Route>
                     <Route exact path='/states' component={StateDashboard}></Route>
@@ -24,6 +27,14 @@ function App() {
                     <Route exact path="/" render={() => (<Redirect to="/usamap"/>)}/>
                         
                 </Switch>
+                <footer className="sticky-footer bg-white">
+                    <div className="container my-auto">
+                    <div className="copyright text-center my-auto">
+                        <span>Copyright &copy; 2020 backupMain Innovations</span>
+                    </div>
+                     </div>
+                </footer>
+                </div>
                 
              
             </Router>

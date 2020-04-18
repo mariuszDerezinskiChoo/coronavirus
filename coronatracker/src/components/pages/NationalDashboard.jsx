@@ -1,24 +1,35 @@
 import React, {useState, useEffect} from 'react';
-import {Container, Row, Col, Card} from 'react-bootstrap';
+import {Container, Row, Col, Card, Dropdown, DropdownButton} from 'react-bootstrap';
 import USAMap from '../USAMap';
 import StateTable from "components/StateTable";
 import {StateChart} from 'components/StateChart';
+import {Chart} from 'components/Chart'
 import {TimeSeriesGraph} from 'components/TimeSeriesGraph'
 import {StyledCard} from 'components/StyledCard';
 import {StatsCard} from 'components/StatsCard';
 import firebase from "../../firebase"
-import {useStateData} from '../../hooks';
+import {useStateData, useStateTimeSeries} from '../../hooks';
 import axios from 'axios';
 
-
+const optionsMap = {'confirmed': 'Confirmed Cases',
+                    'death': 'Deaths',
+                  'newConfirmed': 'New Cases',
+                  'newDeath': 'New Deaths'}
 export function NationalDashboard() {
   const [currentStateSelected, setCurrentStateSelected] = useState('New York');
   const [nationalData, setNationalData] = useState({});
   const [nationalTimeSeries, setNationalTimeSeries] = useState([]);
   const [date, setDate] = useState('');
   const {stateData} = useStateData(date);
+  const [dataOptions, setDataOptions] = useState(['confirmed', 'death'])
+  const {stateTimeSeries} = useStateTimeSeries(currentStateSelected)
   
-
+  const handleChangeOptions0 = (option) => {
+    setDataOptions([option, dataOptions[1]])
+  }
+  const handleChangeOptions1 = (option) => {
+    setDataOptions([dataOptions[0], option])
+  }
   const changeState = (usState) => {
     setCurrentStateSelected(usState);
     
@@ -67,7 +78,7 @@ export function NationalDashboard() {
             
        
         </Col>
-        <Col md={6}>
+        <Col sm={12} md={6}>
           {/* <Card>
             <Card.Body>
               <StateTable stateData={stateData} />
@@ -91,14 +102,42 @@ export function NationalDashboard() {
 
       <Row>
         <Col md={6}>
-            <StyledCard title={currentStateSelected + ' Confirmed Cases'}>
-              <StateChart state={currentStateSelected}/>
+            <StyledCard title={currentStateSelected + ' '+optionsMap[dataOptions[0]]}
+            titleComponent={
+              <DropdownButton className='float-right' onSelect={handleChangeOptions0}>
+                <Dropdown.Item eventKey='confirmed'>Confirmed Cases</Dropdown.Item>
+                <Dropdown.Item eventKey='death'>Deaths</Dropdown.Item>
+                <Dropdown.Item eventKey='newConfirmed'>New Cases</Dropdown.Item>
+                <Dropdown.Item eventKey='newDeath'>New Deaths</Dropdown.Item>
+              </DropdownButton>}>
+            <Chart timeSeries={stateTimeSeries}
+                    title = {currentStateSelected}
+                    
+                    
+                    type={dataOptions[0]}
+                    label={currentStateSelected}/>
+
+
+              {/* <StateChart state={currentStateSelected}/> */}
               </StyledCard>
         </Col>
 
         <Col md={6}>
-            <StyledCard title={currentStateSelected + ' Total Deaths'}>
-              <StateChart data='death' state={currentStateSelected}/>
+            <StyledCard title={currentStateSelected + ' '+optionsMap[dataOptions[1]]}
+            titleComponent={
+              <DropdownButton className='float-right' onSelect={handleChangeOptions1}>
+                <Dropdown.Item eventKey='confirmed'>Confirmed Cases</Dropdown.Item>
+                <Dropdown.Item eventKey='death'>Deaths</Dropdown.Item>
+                <Dropdown.Item eventKey='newConfirmed'>New Cases</Dropdown.Item>
+                <Dropdown.Item eventKey='newDeath'>New Deaths</Dropdown.Item>
+              </DropdownButton>}>
+            <Chart timeSeries={stateTimeSeries}
+                    title = {currentStateSelected}
+                    
+                    
+                    type={dataOptions[1]}
+                    label={currentStateSelected}/>
+              {/* <StateChart data='death' state={currentStateSelected}/> */}
               </StyledCard>
         </Col>
       </Row>

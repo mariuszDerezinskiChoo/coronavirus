@@ -1,7 +1,7 @@
 import React,{useState, useEffect} from 'react';
-import {Container, Row, Col, Card, DropdownButton} from 'react-bootstrap';
+import {Container, Row, Col, Card, DropdownButton, Dropdown} from 'react-bootstrap';
 import USAMap from '../USAMap';
-import {useCountyData, useCountyTimeSeries} from '../../hooks';
+import {useCountyData, useCountyTimeSeries, useStateTimeSeries} from '../../hooks';
 import {CountyTable} from '../CountyTable';
 import {CountyChart} from '../CountyChart';
 import {StateChart} from '../StateChart';
@@ -9,16 +9,17 @@ import {Chart} from '../Chart';
 import {StyledCard} from '../StyledCard';
 import firebase from "../../firebase";
 
-const optionsMap = {'Confirmed': 'confirmed',
-                    'Deaths': 'death',
-                  'New Cases': 'newConfirmed',
-                  'New Deaths': 'newDeath'}
+const optionsMap = {'confirmed': 'Confirmed Cases',
+                    'death': 'Deaths',
+                  'newConfirmed': 'New Cases',
+                  'newDeath': 'New Deaths'}
 export function StateDashboard() {
   const [currentState, setCurrentState] = useState('New York');
   const [countySelected, setCountySelected] = useState('New York City');
   const [date, setDate] = useState('');
   const {countyData} = useCountyData(date, currentState);
   const {countyTimeSeries} = useCountyTimeSeries(currentState, countySelected);
+  const {stateTimeSeries} = useStateTimeSeries(currentState);
   const [dataOptions, setDataOptions] = useState(['confirmed', 'death']);
 
   useEffect(() => {
@@ -33,6 +34,14 @@ export function StateDashboard() {
   const handleSelectState = (usState) => {
     setCurrentState(usState);
     setCountySelected('');
+  }
+
+  const handleChangeOptions0 = (option) => {
+    setDataOptions([option, dataOptions[1]])
+  }
+
+  const handleChangeOptions1 = (option) => {
+    setDataOptions([dataOptions[0], option])
   }
 
   return (
@@ -54,11 +63,21 @@ export function StateDashboard() {
 
         <Row>
           <Col md={6}>
-            <StyledCard title={(countySelected !== '' ? countySelected + ', '+currentState : currentState) + ' Confirmed Cases'}>
+            <StyledCard title={(countySelected !== '' ? countySelected + ', '+currentState : currentState) +' '+ optionsMap[dataOptions[0]]}
+            titleComponent={
+            <DropdownButton className='float-right' onSelect={handleChangeOptions0}>
+              <Dropdown.Item eventKey='confirmed'>Confirmed Cases</Dropdown.Item>
+              <Dropdown.Item eventKey='death'>Deaths</Dropdown.Item>
+              <Dropdown.Item eventKey='newConfirmed'>New Cases</Dropdown.Item>
+              <Dropdown.Item eventKey='newDeath'>New Deaths</Dropdown.Item>
+            </DropdownButton>}
+            >
                   
                   {countySelected !== '' ? 
-                  <Chart timeSeries={countyTimeSeries}
-                    title = {countySelected +', '+currentState }
+                  <Chart timeSeries={stateTimeSeries}
+                    title = {countySelected +', '+currentState}
+                    
+                    
                     type={dataOptions[0]}
                     label={countySelected}/>
                   
@@ -67,12 +86,25 @@ export function StateDashboard() {
                   // state = {currentState}
                   // county = {countySelected}
                   // countyData={countyData}/>
-                    : <StateChart state={currentState}/>}
+                    : <Chart timeSeries={stateTimeSeries}
+                    title = {currentState}
+                    
+                    
+                    type={dataOptions[0]}
+                    label={currentState}/>}
               </StyledCard>
           </Col>
           
           <Col md={6}>
-          <StyledCard title={(countySelected !== '' ? countySelected + ', '+currentState : currentState) + ' Deaths'}>
+          <StyledCard title={(countySelected !== '' ? countySelected + ', '+currentState : currentState) + ' '+optionsMap[dataOptions[1]]}
+          titleComponent={
+            <DropdownButton className='float-right' onSelect={handleChangeOptions1}>
+              <Dropdown.Item eventKey='confirmed'>Confirmed Cases</Dropdown.Item>
+              <Dropdown.Item eventKey='death'>Deaths</Dropdown.Item>
+              <Dropdown.Item eventKey='newConfirmed'>New Cases</Dropdown.Item>
+              <Dropdown.Item eventKey='newDeath'>New Deaths</Dropdown.Item>
+            </DropdownButton>}
+          >
                   {countySelected !== '' ? 
                   <Chart timeSeries={countyTimeSeries}
                   title = {countySelected +', '+currentState}
@@ -83,7 +115,12 @@ export function StateDashboard() {
                   // state = {currentState}
                   // county = {countySelected}
                   // countyData={countyData}/>
-                    : <StateChart data='death' state={currentState}/>}
+                    : <Chart timeSeries={stateTimeSeries}
+                    title = {currentState}
+                    
+                    
+                    type={dataOptions[1]}
+                    label={currentState}/>}
               </StyledCard>
           </Col>
         </Row>
