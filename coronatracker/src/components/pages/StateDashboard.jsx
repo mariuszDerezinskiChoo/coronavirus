@@ -74,7 +74,7 @@ export function StateDashboard() {
             >
                   
                   {countySelected !== '' ? 
-                  <Chart timeSeries={stateTimeSeries}
+                  <Chart timeSeries={countyTimeSeries}
                     title = {countySelected +', '+currentState}
                     
                     
