@@ -138,7 +138,7 @@ exports.fetchNewDay = functions.firestore.document('validation/UnitedStates/comm
                                             "newConfirmed" : tomorrowNewConfirmed,
                                             "newDeath" : tomorrowNewDeath,
                                             "county" : county,
-                                            "date" : yesterday,
+                                            "date" : tomorrow,
                                             "inferred" : false
                                         }
                                         t.set(tomorrowRef,tomorrowUpdate)
