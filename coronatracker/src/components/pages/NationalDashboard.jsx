@@ -14,7 +14,15 @@ import axios from 'axios';
 const optionsMap = {'confirmed': 'Confirmed Cases',
                     'death': 'Deaths',
                   'newConfirmed': 'New Cases',
-                  'newDeath': 'New Deaths'}
+                  'newDeath': 'New Deaths',
+                  'positive': 'Cases',
+					        'hospitalizedCurrently': 'Hospitalized Currently',
+                  'inIcuCurrently': 'in ICU Currently',
+                  'onVentilatorCurrently':'on Ventilator Currently',
+                  'recovered': 'Recovered',
+                  'death': 'Deaths',
+                  'positiveIncrease': 'New Cases',
+                  'totalTestResults': 'Tests'}
 export function NationalDashboard() {
   const [currentStateSelected, setCurrentStateSelected] = useState('New York');
   const [nationalData, setNationalData] = useState({});
@@ -22,8 +30,12 @@ export function NationalDashboard() {
   const [date, setDate] = useState('');
   const {stateData} = useStateData(date);
   const [dataOptions, setDataOptions] = useState(['confirmed', 'death'])
+  const [nationalTimeSeriesOptions, setNationalTimeSeriesOptions] = useState('positive');
   const {stateTimeSeries} = useStateTimeSeries(currentStateSelected)
   
+  const handleChangeOptions = (option) => {
+    setNationalTimeSeriesOptions(option);
+  }
   const handleChangeOptions0 = (option) => {
     setDataOptions([option, dataOptions[1]])
   }
@@ -42,6 +54,7 @@ export function NationalDashboard() {
     axios.get('https://covidtracking.com/api/v1/us/current.json').then(res => {
       
       setNationalData(res.data[0])
+      console.log(nationalData);
     })
 
     axios.get('https://covidtracking.com/api/us/daily').then(res => {
@@ -92,8 +105,19 @@ export function NationalDashboard() {
 
       <Row className="justify-content-center">
         <Col md={8}>
-        <StyledCard title="Total US Cases">
-          <TimeSeriesGraph data={nationalTimeSeries}/> 
+        <StyledCard title={"Total US "+optionsMap[nationalTimeSeriesOptions]}
+        titleComponent={
+          <DropdownButton className='float-right' onSelect={handleChangeOptions}>
+            <Dropdown.Item eventKey='positive'>Confirmed Cases</Dropdown.Item>
+            <Dropdown.Item eventKey='death'>Deaths</Dropdown.Item>
+            <Dropdown.Item eventKey='positiveIncrease'>New Cases</Dropdown.Item>
+            <Dropdown.Item eventKey='recovered'>Recovered</Dropdown.Item>
+            <Dropdown.Item eventKey='totalTestResults'>Total Tests</Dropdown.Item>
+            <Dropdown.Item eventKey='hospitalizedCurrently'>Hospitalized Currently</Dropdown.Item>
+            <Dropdown.Item eventKey='inIcuCurrently'>ICU Currently</Dropdown.Item>
+            <Dropdown.Item eventKey='onVentilatorCurrently'>Ventilator Currently</Dropdown.Item>
+          </DropdownButton>}>
+          <TimeSeriesGraph option={nationalTimeSeriesOptions} data={nationalTimeSeries}/> 
         </StyledCard>
         </Col>
         

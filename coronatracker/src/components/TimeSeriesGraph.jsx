@@ -7,14 +7,14 @@ export const TimeSeriesGraph = (props) => {
         labels: props.data.map((c) => (c.date)),
         datasets: [
             {
-                label: 'Total US Cases',
+                label: 'USA',
                 backgroundColor: 'rgba(255,99,132,0.2)',
                 borderColor: 'rgba(255,99,132,1)',
                 borderWidth: 1,
                 hoverBackgroundColor: 'rgba(255,99,132,0.4)',
                 hoverBorderColor: 'rgba(255,99,132,1)',
                 
-                data:props.data.map((c) => (c.positive))
+                data:props.data.map((c) => (c[props.option]))
             }
         ]
     }
@@ -25,7 +25,7 @@ export const TimeSeriesGraph = (props) => {
           options={{
             title:{
               display:true,
-              text:'Total US Cases',
+              text:'USA',
               fontSize:20
             },
             legend:{
