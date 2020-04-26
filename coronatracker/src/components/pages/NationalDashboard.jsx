@@ -22,7 +22,9 @@ const optionsMap = {'confirmed': 'Confirmed Cases',
                   'recovered': 'Recovered',
                   'death': 'Deaths',
                   'positiveIncrease': 'New Cases',
-                  'totalTestResults': 'Tests'}
+                  'totalTestResults': 'Tests',
+                  'deathIncrease': 'New Deaths',
+                  'positive-rate': 'Daily Positive Test Rate'}
 export function NationalDashboard() {
   const [currentStateSelected, setCurrentStateSelected] = useState('New York');
   const [nationalData, setNationalData] = useState({});
@@ -111,6 +113,8 @@ export function NationalDashboard() {
             <Dropdown.Item eventKey='positive'>Confirmed Cases</Dropdown.Item>
             <Dropdown.Item eventKey='death'>Deaths</Dropdown.Item>
             <Dropdown.Item eventKey='positiveIncrease'>New Cases</Dropdown.Item>
+            <Dropdown.Item eventKey='deathIncrease'>New Deaths</Dropdown.Item>
+            <Dropdown.Item eventKey='positive-rate'>Daily Positive Test Rate</Dropdown.Item>
             <Dropdown.Item eventKey='recovered'>Recovered</Dropdown.Item>
             <Dropdown.Item eventKey='totalTestResults'>Total Tests</Dropdown.Item>
             <Dropdown.Item eventKey='hospitalizedCurrently'>Hospitalized Currently</Dropdown.Item>
