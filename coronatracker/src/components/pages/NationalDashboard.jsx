@@ -33,6 +33,7 @@ export function NationalDashboard() {
   const {stateData} = useStateData(date);
   const [dataOptions, setDataOptions] = useState(['confirmed', 'death'])
   const [nationalTimeSeriesOptions, setNationalTimeSeriesOptions] = useState('positive');
+  const [stateHistoricalData, setStateHistoricalData] = useState([])
   const {stateTimeSeries} = useStateTimeSeries(currentStateSelected)
   
   const handleChangeOptions = (option) => {
@@ -59,7 +60,15 @@ export function NationalDashboard() {
       console.log(nationalData);
     })
 
-    axios.get('https://covidtracking.com/api/us/daily').then(res => {
+    axios.get('https://covidtracking.com/api/v1/states/daily.json').then(res => {
+      setStateHistoricalData(res.data.reverse())
+      //console.log(res.data.filter(function(entry) {return entry.state == 'NY'}))
+      // setStateHistoricalData(['a'])
+      // console.log("aljsdkfalksdf")
+      //console.log(stateHistoricalData)
+    })
+
+    axios.get('https://covidtracking.com/api/v1/us/daily.json').then(res => {
       console.log(res.data);
       setNationalTimeSeries(res.data.reverse());
     })
@@ -106,7 +115,7 @@ export function NationalDashboard() {
       </Row>
 
       <Row className="justify-content-center">
-        <Col md={8}>
+        <Col md={10}>
         <StyledCard title={"Total US "+optionsMap[nationalTimeSeriesOptions]}
         titleComponent={
           <DropdownButton className='float-right' onSelect={handleChangeOptions}>
@@ -127,6 +136,16 @@ export function NationalDashboard() {
         
       
       </Row>
+
+      {/* <Row>
+        <Col md={10}>
+            <StyledCard 
+              title={"NY"}
+            >
+                <TimeSeriesGraph option={'positive'} data={stateHistoricalData.filter(function(entry) {return entry.state == 'NY'})}/>
+            </StyledCard>
+        </Col>
+      </Row> */}
 
       <Row>
         <Col md={6}>
