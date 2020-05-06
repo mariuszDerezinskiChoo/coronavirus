@@ -34,11 +34,12 @@ exports.checkForCommits = functions.pubsub.schedule('every 60 minutes').onRun((c
                                     "updated" : false,
                                 }
                                 let promises = [];
+                                
                                 if(!doc.exists){
-                                    promises.append(db.collection("Countries").doc("UnitedStates")
+                                    promises.push(db.collection("Countries").doc("UnitedStates")
                                         .set({"lastUpdated": dateISO},{merge:true}))
                                 }
-                                promises.append(db.collection("validation")
+                                promises.push(db.collection("validation")
                                         .doc("UnitedStates")
                                         .collection("commits")
                                         .doc(dateISO)
