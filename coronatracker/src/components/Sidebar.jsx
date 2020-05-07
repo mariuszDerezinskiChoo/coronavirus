@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileMedicalAlt, faTachometerAlt, faAddressBook , faInfoCircle,
-faDonate, faChevronCircleLeft} from '@fortawesome/free-solid-svg-icons'
+faDonate, faChevronCircleLeft, faComment} from '@fortawesome/free-solid-svg-icons'
 export const Sidebar = (props) => {
     const [sideBarOpen, setSideBarOpen] = useState(false); 
     const handleClick =(e) => {
@@ -46,14 +46,26 @@ export const Sidebar = (props) => {
         
       </li>
 
-      <hr class="sidebar-divider"></hr>
+
+     
       </Link>
+
+      <Link to='/discuss'>
+        <li class="nav-item active">
+            <a class="nav-link" href="index.html">
+            <FontAwesomeIcon icon={faComment}></FontAwesomeIcon>
+            {/* <i class="fas fa-fw fa-tachometer-alt"></i> */}
+            <span>    Discuss</span></a>
+        </li>
+      </Link>
+
+      <hr class="sidebar-divider"></hr>
 
       <Link to='/info'>
       <li class="nav-item active">
         <a class="nav-link" aria-expanded="true" aria-controls="collapseUtilities">
         <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
-          <span>    Coronavirus Info</span>
+          <span>    About our Data</span>
         </a>
 
       </li>
