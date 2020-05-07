@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Container, Row, Col, Card, Dropdown, DropdownButton} from 'react-bootstrap';
 import USAMap from '../USAMap';
+import {Link} from 'react-router-dom';
 import StateTable from "components/StateTable";
 import {StateChart} from 'components/StateChart';
 import {Chart} from 'components/Chart'
@@ -108,7 +109,11 @@ export function NationalDashboard() {
               <StateTable stateData={stateData} />
             </Card.Body>
           </Card> */}
-          <StyledCard title="US States" subtitle={'Data valid through: ' +date} footer="Source: Johns Hopkins">
+          <StyledCard title="US States" subtitle={'Data valid through: ' +date} footer={<Link to='/info'>
+        
+            <p>About our data</p>
+        
+      </Link>}>
           <StateTable handleClick={changeState} stateData={stateData} />
           </StyledCard>
         </Col>

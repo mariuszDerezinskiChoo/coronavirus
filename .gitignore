@@ -65,4 +65,4 @@ build/Release
 functions/assets/github.json
 functions/assets/firestore_admin.json
 
-coronatracker/build/
+coronatracker/build

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Line} from 'react-chartjs-2';
 import {useStateTimeSeries} from '../hooks';
-const style = {minHeight: '1200px'}
+const style = {height: '1200px'}
 export const StateChart = (props) => {
     const {stateTimeSeries} = useStateTimeSeries(props.state);
     let data;
@@ -25,7 +25,7 @@ export const StateChart = (props) => {
     }
     
     return (
-      <div minHeight={800} style={style}>
+      <div style={style}>
         <Line
           data={state}
           options={{
