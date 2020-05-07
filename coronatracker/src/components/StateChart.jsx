@@ -1,6 +1,7 @@
 import React from 'react';
 import {Line} from 'react-chartjs-2';
 import {useStateTimeSeries} from '../hooks';
+const style = {minHeight: '1200px'}
 export const StateChart = (props) => {
     const {stateTimeSeries} = useStateTimeSeries(props.state);
     let data;
@@ -22,14 +23,17 @@ export const StateChart = (props) => {
             }
         ]
     }
+    
     return (
+      <div minHeight={800} style={style}>
         <Line
           data={state}
           options={{
             title:{
               display:true,
               text:props.state,
-              fontSize:20
+              fontSize:20,
+              maintainAspectRatio:false
             },
             legend:{
               display:false,
@@ -37,5 +41,6 @@ export const StateChart = (props) => {
             }
           }}
         />
+        </div>
     );
 }

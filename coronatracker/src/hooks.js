@@ -74,6 +74,7 @@ export const useStateTimeSeries = (state) => {
     const [stateTimeSeries, setStateTimeSeries] = useState([]);
 
     useEffect(() => {
+       
         let unsub = firebase.firestore().collection('Countries').doc('UnitedStates')
             .collection('STATES').where('state', '==', state).onSnapshot((snapshot) => {
                 const newData = snapshot.docs.map(state => ({

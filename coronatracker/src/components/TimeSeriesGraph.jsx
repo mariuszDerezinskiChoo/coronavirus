@@ -2,19 +2,25 @@ import React from 'react';
 import {Line} from 'react-chartjs-2';
 
 export const TimeSeriesGraph = (props) => {
+    let d;
+    if (props.option === 'positive-rate') {
+      d = props.data.map((c) => (100*c.positiveIncrease/c.totalTestResultsIncrease))
+    } else {
+      d = props.data.map((c) => (c[props.option]))
+    }
 
     const data = {
         labels: props.data.map((c) => (c.date)),
         datasets: [
             {
-                label: 'Total US Cases',
+                label: 'USA',
                 backgroundColor: 'rgba(255,99,132,0.2)',
                 borderColor: 'rgba(255,99,132,1)',
                 borderWidth: 1,
                 hoverBackgroundColor: 'rgba(255,99,132,0.4)',
                 hoverBorderColor: 'rgba(255,99,132,1)',
                 
-                data:props.data.map((c) => (c.positive))
+                data:d
             }
         ]
     }
@@ -25,7 +31,7 @@ export const TimeSeriesGraph = (props) => {
           options={{
             title:{
               display:true,
-              text:'Total US Cases',
+              text:'USA',
               fontSize:20
             },
             legend:{
