@@ -1,6 +1,6 @@
 import React from 'react';
 import {Line} from 'react-chartjs-2';
-
+const style = {minHeight: '600px'}
 export const TimeSeriesGraph = (props) => {
     let d;
     if (props.option === 'positive-rate') {
@@ -26,9 +26,13 @@ export const TimeSeriesGraph = (props) => {
     }
    
     return (
+      <div style={style}>
+
+   
         <Line
           data={data}
           options={{
+            maintainAspectRatio:false,
             title:{
               display:true,
               text:'USA',
@@ -40,5 +44,7 @@ export const TimeSeriesGraph = (props) => {
             }
           }}
         />
+
+    </div>
     );
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import {Line} from 'react-chartjs-2';
+const style = {minHeight: '300px'}
 export function Chart(props) {
 
     const state = {
@@ -16,6 +17,8 @@ export function Chart(props) {
     }
 
     return (
+      <div style={style}>
+
         <Line
           data={state}
           options={{
@@ -24,11 +27,14 @@ export function Chart(props) {
               text:props.title,
               fontSize:20
             },
+            maintainAspectRatio:false,
             legend:{
               display:false,
               position:'right'
             }
           }}
         />
+
+      </div>
     );
 }

@@ -10,7 +10,6 @@ import Login from './components/authentication/Login';
 import Signup from './components/authentication/Signup';
 import {Sidebar} from './components/Sidebar';
 import {NavBar} from './components/NavBar';
-import Home from './Home';
 // import './assets/css/sb-admin-2.min.css';
 import './assets/css/index.css';
 import './assets/scss/sb-admin-2.scss';
@@ -18,15 +17,14 @@ import './assets/scss/sb-admin-2.scss';
 // import "./assets1/sass/light-bootstrap-dashboard-react.scss?v=1.3.0";
 
 
-function App() {
+function Home() {
     return (
-        <div id="wrapper">
-             {/* <AuthProvider> */}
-             <Router>
+       
+            <Router>
                 
                 <Sidebar></Sidebar>
                 <div id='content-wrapper'>
-                {/* <NavBar></NavBar> */}
+                <NavBar></NavBar>
                 <Switch>
                     <Route exact path='/usamap' component={NationalDashboard}></Route>
                     <Route exact path='/states' component={StateDashboard}></Route>
@@ -49,11 +47,9 @@ function App() {
              
             </Router>
             
-            {/* </AuthProvider> */}
             
-        </div>
         
     );
 }
 
-export default App
+export default Home
