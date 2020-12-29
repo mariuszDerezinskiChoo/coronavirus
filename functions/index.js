@@ -53,6 +53,13 @@ exports.checkForCommits = functions.pubsub.schedule('every 60 minutes').onRun((c
 exports.fetchNewDay = functions.firestore.document('validation/UnitedStates/commits/{day}').onWrite((change, context) => {
     let changeAfter = change.after.data();
     if(changeAfter.updated == false){
+        let today = new Date();
+        let updated = new Date(changeAfter.date);
+        if(today.getMilliseconds() - updated.getMilliseconds() > 604800000){
+            console.log("Greater than a week, not updating");
+            return null;
+        }
+
         let dateRaw = changeAfter.date.split("-");
         let fileGitHub = dateRaw[1] + "-" + dateRaw[2] + "-" + dateRaw[0] + ".csv"
         console.log(fileGitHub);
