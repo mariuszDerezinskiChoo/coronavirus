@@ -9,7 +9,7 @@
   "author": "Mariusz Derezinski-Choo Steven Chen",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "bootstrap": "^4.4.1",
     "browser-sync": "^2.26.7",
     "browsersync": "0.0.1-security",
